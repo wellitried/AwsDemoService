@@ -1,5 +1,11 @@
 ### Run
-- docker run -d -p 8080:8080 mrkvigor/aws-demo:latest
+- docker run \
+  --log-driver=awslogs \
+  --log-opt awslogs-region=us-east-1 \
+  --log-opt awslogs-group=demo \
+  -d -p 8080:8080 mrkvigor/aws-demo:latest
+###### *EC2 must have a role with CloudWatchLogsFullAccess policy
+
 ---
 ### Build/push container:
 - mvn clean install  
@@ -25,8 +31,8 @@
 - sudo pip3 install awscli --upgrade
 - curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /opt
 
-### Create cluster
-- eksctl create cluster --name \*name\*
+### Create k8s cluster and deployment
+- eksctl create cluster -f eksctl-cluster.yml
 - kubectl create -f demo-deployment.yml
 - kubectl expose deployment demo-deployment --type=LoadBalancer --port=8080
 

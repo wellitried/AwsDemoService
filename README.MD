@@ -3,6 +3,8 @@
   --log-driver=awslogs \
   --log-opt awslogs-region=us-east-1 \
   --log-opt awslogs-group=demo \
+  -e QUARKUS_DATASOURCE_USERNAME=user \
+  -e QUARKUS_DATASOURCE_PASSWORD=password \
   -d -p 8080:8080 mrkvigor/aws-demo:latest
 ###### *EC2 must have a role with CloudWatchLogsFullAccess policy
 

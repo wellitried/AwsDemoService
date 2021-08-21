@@ -1,12 +1,17 @@
 package com.github.awsdemoservice.rest;
 
+import com.github.awsdemoservice.dao.Product;
+import com.github.awsdemoservice.dao.ProductService;
 import org.jboss.logging.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.TreeMap;
 
+@ApplicationScoped
 @Path("/product")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -14,22 +19,38 @@ public class ProductResource {
 
     private static final Logger LOG = Logger.getLogger(ProductResource.class);
 
-    private final TreeMap<Long, ProductDto> products = new TreeMap<>();
+    @Inject
+    ProductService productService;
 
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") Long id) {
-        ProductDto productDto = products.get(id);
-        LOG.info("GET " + id + ": " + productDto.toString());
-        return Response.ok(productDto).build();
+        LOG.info("GET: " + id);
+        try {
+            final Product product = productService.getById(id);
+            return Response.ok(product).build();
+        } catch (NoResultException exception) {
+            LOG.error(exception);
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @POST
-    public Response create(ProductDto productDto) {
-        long maxId = products.isEmpty() ? 0 : products.lastKey();
-        productDto.id = ++maxId;
-        LOG.info("POST: " + productDto.toString());
-        ProductDto savedProductDto = products.put(productDto.id, productDto);
-        return Response.ok(savedProductDto).build();
+    public Response create(Product product) {
+        LOG.info("POST: " + product.toString());
+        Product persistedProduct = productService.persist(product);
+        return Response.ok(persistedProduct).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response delete(@PathParam("id") Long id) {
+        LOG.info("DELETE: " + id);
+        int deletedRows = productService.delete(id);
+        if (deletedRows == 0) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } else {
+            return Response.ok().build();
+        }
     }
 }

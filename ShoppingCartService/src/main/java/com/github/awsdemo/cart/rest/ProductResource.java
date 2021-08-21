@@ -1,7 +1,7 @@
-package com.github.awsdemoservice.rest;
+package com.github.awsdemo.cart.rest;
 
-import com.github.awsdemoservice.dao.Product;
-import com.github.awsdemoservice.dao.ProductService;
+import com.github.awsdemo.cart.dao.Product;
+import com.github.awsdemo.cart.dao.ProductService;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;

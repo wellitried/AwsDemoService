@@ -1,4 +1,4 @@
-package com.github.awsdemoservice.dao;
+package com.github.awsdemo.cart.dao;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
